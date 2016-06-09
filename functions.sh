@@ -31,14 +31,14 @@ get_version()
 		SMALL_STORAGE="appendonly=true, orientation=parquet"
 		MEDIUM_STORAGE="appendonly=true, orientation=parquet, compresstype=snappy"
 		LARGE_STORAGE="appendonly=true, orientation=parquet, compresstype=snappy"
-		E9_MEDIUM_STORAGE="APPENDONLY=TRUE, COMPRESSTYPE=QUICKLZ"
+		E9_MEDIUM_STORAGE="APPENDONLY=TRUE, COMPRESSTYPE=zlib"
 		E9_LARGE_STORAGE="APPENDONLY=TRUE, ORIENTATION=parquet, COMPRESSTYPE=snappy"
 	else
 		SMALL_STORAGE="appendonly=true, orientation=column"
-		MEDIUM_STORAGE="appendonly=true, orientation=column, compresstype=quicklz"
-		LARGE_STORAGE="appendonly=true, orientation=column, compresstype=quicklz"
-		E9_MEDIUM_STORAGE="APPENDONLY=TRUE, COMPRESSTYPE=QUICKLZ"
-		E9_LARGE_STORAGE="APPENDONLY=TRUE, ORIENTATION=column, COMPRESSTYPE=QUICKLZ"
+		MEDIUM_STORAGE="appendonly=true, orientation=column, compresstype=zlib"
+		LARGE_STORAGE="appendonly=true, orientation=column, compresstype=zlib"
+		E9_MEDIUM_STORAGE="APPENDONLY=TRUE, COMPRESSTYPE=zlib"
+		E9_LARGE_STORAGE="APPENDONLY=TRUE, ORIENTATION=column, COMPRESSTYPE=zlib"
 	fi
 }
 
