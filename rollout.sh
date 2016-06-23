@@ -89,6 +89,65 @@ if [ "$RUN_MULTI_USER_REPORT" == "true" ]; then
 fi
 
 for i in $(ls -d $PWD/0*); do
+
+	case $i in
+		00_compile_tpcds)
+			if [ "$RUN_COMPILE_TPCDS" != "true" ]; then
+				continue	
+			fi	
+			;;
+		01_gen_data)
+			if [ "$RUN_GEN_DATA" != "true" ]; then
+				continue
+			fi
+			;;
+		02_init)
+			if [ "$RUN_INIT" != "true" ]; then
+				continue
+			fi
+			;;
+		03_ddl)
+			if [ "$RUN_DDL" != "true" ]; then
+				continue
+			fi
+			;;
+		04_load)
+			if [ "$RUN_LOAD" != "true" ]; then
+				continue
+			fi
+			;;
+		05_sql)
+			if [ "$RUN_SQL" != "true" ]; then
+				continue
+			fi
+			;;
+		06_single_user_reports)
+			if [ "$RUN_SINGLE_USER_REPORT" != "true" ]; then
+				continue
+			fi
+			;;
+		07_multi_user)
+			if [ "$RUN_MULTI_USER" != "true" ]; then
+				continue
+			fi
+			;;
+		08_multi_user_reports)
+			if [ "$RUN_MULTI_USER_REPORT" != "true" ]; then
+				continue
+			fi
+			;;
+		*)
+			echo "$i will run"
+			;;
+	esac
+
+
+	date1=$(getDate)
+	echo "$date Starting section $i of benchmarks"
 	echo "$i/rollout.sh"
 	$i/rollout.sh $GEN_DATA_SCALE $EXPLAIN_ANALYZE $SQL_VERSION $RANDOM_DISTRIBUTION $MULTI_USER_COUNT
+        date2=$(getDate)
+	echo "$date Finished section $i of benchmarks"
+        result=$(dateDiff "$date1" "$date2")
+        echo "Section $i took $result to complete"
 done

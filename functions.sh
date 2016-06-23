@@ -114,3 +114,45 @@ get_nvseg_perseg()
 {
 	nvseg_perseg=$(psql -t -A -c "show hawq_rm_nvseg_perquery_perseg_limit")
 }
+
+function getDate()
+{
+	currDate=$(date "+TIME:%H:%M:%S:DATE:%d-%m-%y")
+	echo $currDate
+}
+
+function dateDiff()
+{
+	#expecting arguments as the following format: "TIME:10:38:18:DATE:23-06-16"
+	firstDate=$1
+	secondDate=$2
+	if [ -z "$firstDate" ]; then
+		return
+	elif [ -z "$secondDate" ]; then
+		return
+	fi
+	
+	firstDateSeconds=$(echo $firstDate | awk -F: '{print $4}')
+	firstDateMinutes=$(echo $firstDate | awk -F: '{print $3}')
+	firstDateHours=$(echo $firstDate | awk -F: '{print $2}')
+	secondDateSeconds=$(echo $secondDate | awk -F: '{print $4}')
+	secondDateMinutes=$(echo $secondDate | awk -F: '{print $3}')
+	secondDateHours=$(echo $secondDate | awk -F: '{print $2}')
+	
+	secondsDiff=$(($secondDateSeconds - $firstDateSeconds))
+	minutesDiff=$(($secondDateMinutes - $firstDateMinutes))
+	hoursDiff=$(($secondDateHours - $firstDateHours))
+	
+	echo "$hoursDiff hours, $minutesDiff minutes, $secondsDiff seconds"
+}
+
+function dateTest()
+{
+	date1=$(getDate)
+	sleep 5
+	date2=$(getDate)
+
+	result=$(dateDiff "$date1" "$date2")
+
+	echo $result
+}
