@@ -117,13 +117,13 @@ get_nvseg_perseg()
 
 function getDate()
 {
-	currDate=$(date "+TIME:%H:%M:%S:DATE:%d-%m-%y")
+	currDate=$(date "+TIME:%-H:%-M:%-S:DATE:%-d-%-m-%-y")
 	echo $currDate
 }
 
 function dateDiff()
 {
-	#expecting arguments as the following format: "TIME:10:38:18:DATE:23-06-16"
+	#expecting arguments as the following format: "TIME:10:38:18:DATE:23-6-16"
 	firstDate=$1
 	secondDate=$2
 	if [ -z "$firstDate" ]; then
@@ -138,10 +138,24 @@ function dateDiff()
 	secondDateSeconds=$(echo $secondDate | awk -F: '{print $4}')
 	secondDateMinutes=$(echo $secondDate | awk -F: '{print $3}')
 	secondDateHours=$(echo $secondDate | awk -F: '{print $2}')
-	
-	secondsDiff=$(($secondDateSeconds - $firstDateSeconds))
-	minutesDiff=$(($secondDateMinutes - $firstDateMinutes))
-	hoursDiff=$(($secondDateHours - $firstDateHours))
+
+	if [ $secondDateSeconds -gt $firstDateSeconds ]; then
+		secondsDiff=$(($secondDateSeconds - $firstDateSeconds))
+	else
+		secondsDiff=$(($firstDateSeconds - $secondDateSeconds))
+	fi
+
+	if [ $secondDateMinutes -gt $firstDateMinutes ]; then
+		minutesDiff=$(($secondDateMinutes - $firstDateMinutes))
+	else
+		minutesDiff=$(($firstDateMinutes - $secondDateMinutes))
+	fi
+
+	if [ $secondDateHours -gt $firstDateHours ]; then
+		hoursDiff=$(($secondDateHours - $firstDateHours))
+	else
+		hoursDiff=$(($firstDateHours - $secondDateHours))
+	fi
 	
 	echo "$hoursDiff hours, $minutesDiff minutes, $secondsDiff seconds"
 }
@@ -154,5 +168,5 @@ function dateTest()
 
 	result=$(dateDiff "$date1" "$date2")
 
-	echo $result
+	echo "$result"
 }
