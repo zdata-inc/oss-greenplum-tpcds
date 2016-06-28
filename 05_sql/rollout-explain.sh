@@ -1,15 +1,14 @@
 #!/bin/bash
-set -e
-
+set -e 
 PWD=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $PWD/../functions.sh
 source_bashrc
 
-GEN_DATA_SCALE=$1
-EXPLAIN_ANALYZE=$2
-SQL_VERSION=$3
-RANDOM_DISTRIBUTION=$4
-MULTI_USER_COUNT=$5
+GEN_DATA_SCALE=2
+EXPLAIN_ANALYZE="true"
+SQL_VERSION="tpcds"
+RANDOM_DISTRIBUTION="false"
+MULTI_USER_COUNT="false"
 
 if [[ "$GEN_DATA_SCALE" == "" || "$EXPLAIN_ANALYZE" == "" || "$SQL_VERSION" == "" || "$RANDOM_DISTRIBUTION" == "" || "$MULTI_USER_COUNT" == "" ]]; then
 	echo "You must provide the scale as a parameter in terms of Gigabytes, true/false to run queries with EXPLAIN ANALYZE option, the SQL_VERSION, and true/false to use random distrbution."
@@ -17,7 +16,6 @@ if [[ "$GEN_DATA_SCALE" == "" || "$EXPLAIN_ANALYZE" == "" || "$SQL_VERSION" == "
 	echo "This will create 100 GB of data for this test, not run EXPLAIN ANALYZE, use standard TPC-DS, not use random distribution and use 5 sessions for the multi-user test."
 	exit 1
 fi
-
 step=sql
 init_log $step
 
@@ -29,12 +27,6 @@ for i in $(ls $PWD/*.$SQL_VERSION.*.sql); do
 	table_name=`echo $i | awk -F '.' '{print $3}'`
 	start_log
 
-	# Query 110 / 10 sucks in Greenplum. Skip it for now until we can rewrite it.
-	if [ "$id" == "110" ]; then
-		log $tuples
-		continue
-	fi
-
 	if [ "$EXPLAIN_ANALYZE" == "false" ]; then
 		echo "psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE=\"\" -f $i | wc -l"
 		tuples=$(psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE="" -f $i | wc -l; exit ${PIPESTATUS[0]})
@@ -43,8 +35,8 @@ for i in $(ls $PWD/*.$SQL_VERSION.*.sql); do
 	else
 		myfilename=$(basename $i)
 		mylogfile=$PWD/../log/$myfilename.single.explain_analyze.log
-		echo "psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE=\"EXPLAIN ANALYZE\" -f $i > $mylogfile"
-		psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE="EXPLAIN ANALYZE" -f $i > $mylogfile
+		echo "psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE=\"EXPLAIN\" -f $i > $mylogfile"
+		psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE="EXPLAIN" -f $i > $mylogfile
 		tuples="0"
 	fi
 	log $tuples

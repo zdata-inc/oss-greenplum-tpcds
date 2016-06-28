@@ -91,47 +91,47 @@ fi
 for i in $(ls -d $PWD/0*); do
 
 	case $i in
-		00_compile_tpcds)
+		"00_compile_tpcds")
 			if [ "$RUN_COMPILE_TPCDS" != "true" ]; then
 				continue	
 			fi	
 			;;
-		01_gen_data)
+		"01_gen_data")
 			if [ "$RUN_GEN_DATA" != "true" ]; then
 				continue
 			fi
 			;;
-		02_init)
+		"02_init")
 			if [ "$RUN_INIT" != "true" ]; then
 				continue
 			fi
 			;;
-		03_ddl)
+		"03_ddl")
 			if [ "$RUN_DDL" != "true" ]; then
 				continue
 			fi
 			;;
-		04_load)
+		"04_load")
 			if [ "$RUN_LOAD" != "true" ]; then
 				continue
 			fi
 			;;
-		05_sql)
+		"05_sql")
 			if [ "$RUN_SQL" != "true" ]; then
 				continue
 			fi
 			;;
-		06_single_user_reports)
+		"06_single_user_reports")
 			if [ "$RUN_SINGLE_USER_REPORT" != "true" ]; then
 				continue
 			fi
 			;;
-		07_multi_user)
+		"07_multi_user")
 			if [ "$RUN_MULTI_USER" != "true" ]; then
 				continue
 			fi
 			;;
-		08_multi_user_reports)
+		"08_multi_user_reports")
 			if [ "$RUN_MULTI_USER_REPORT" != "true" ]; then
 				continue
 			fi
@@ -151,3 +151,5 @@ for i in $(ls -d $PWD/0*); do
         result=$(dateDiff "$date1" "$date2")
         echo "Section $i took $result to complete"
 done
+
+bash $PWD/05_sql/rollout-explain.sh
