@@ -23,19 +23,11 @@ init_log $step
 
 rm -f $PWD/../log/*single.explain_analyze.log
 
-for i in $(ls $PWD/*.$SQL_VERSION.*.sql); do
+for i in $(ls $PWD/*.$SQL_VERSION.*.sql | grep -v 110)); do
 	id=`echo $i | awk -F '.' '{print $1}'`
 	schema_name=`echo $i | awk -F '.' '{print $2}'`
 	table_name=`echo $i | awk -F '.' '{print $3}'`
 	start_log
-
-	# Query 110 / 10 sucks in Greenplum. Skip it for now until we can rewrite it.
-        queryTen=$(echo $id | grep 110 | grep tpcds)
-        if [ -n "$queryTen" ]; then
-                log 0
-                echo "skipping query 10"
-                continue
-        fi
 
 	if [ "$EXPLAIN_ANALYZE" == "false" ]; then
 		echo "psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE=\"\" -f $i | wc -l"
