@@ -30,10 +30,12 @@ for i in $(ls $PWD/*.$SQL_VERSION.*.sql); do
 	start_log
 
 	# Query 110 / 10 sucks in Greenplum. Skip it for now until we can rewrite it.
-	if [ "$id" == "110" ]; then
-		log $tuples
-		continue
-	fi
+        queryTen=$(echo $id | grep 110 | grep tpcds)
+        if [ -n "$queryTen" ]; then
+                log 0
+                echo "skipping query 10"
+                continue
+        fi
 
 	if [ "$EXPLAIN_ANALYZE" == "false" ]; then
 		echo "psql -A -q -t -P pager=off -v ON_ERROR_STOP=ON -v EXPLAIN_ANALYZE=\"\" -f $i | wc -l"
