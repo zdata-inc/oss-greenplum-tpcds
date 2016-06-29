@@ -23,7 +23,7 @@ init_log $step
 
 rm -f $PWD/../log/*single.explain_analyze.log
 
-for i in $(ls $PWD/*.$SQL_VERSION.*.sql | grep -v 110)); do
+for i in $(ls $PWD/*.$SQL_VERSION.*.sql | grep -v 110); do
 	id=`echo $i | awk -F '.' '{print $1}'`
 	schema_name=`echo $i | awk -F '.' '{print $2}'`
 	table_name=`echo $i | awk -F '.' '{print $3}'`
