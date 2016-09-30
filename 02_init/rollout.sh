@@ -36,13 +36,21 @@ check_gucs()
 		counter=$(psql -v ON_ERROR_STOP=ON -t -A -c "show optimizer" | grep -i "on" | wc -l; exit ${PIPESTATUS[0]})
 
 		if [ "$counter" -eq "0" ]; then
-			echo "enabling optimizer"
 			if [ "$VERSION" == "hawq_2" ]; then
+				echo "enabling optimizer"
 				hawq config -c optimizer -v on
+				update_config="1"
 			else
-				gpconfig -c optimizer -v on --masteronly
+				vitesse_greenplum=$(psql -v ON_ERROR_STOP=off -t -A -c "show vitesse.version" | grep -i "DeepGreen" | wc -l; exit ${PIPESTATUS[0]})
+				if [ $vitesse_greenplum == 0 ]; then
+					echo "enabling Greenplum optimizer"
+					gpconfig -c optimizer -v on --masteronly
+					update_config="1"
+				else
+					echo "detected vitesse greenplum. Not turning on optimizer."
+					psql -v ON_ERROR_STOP=on -t -A -c "show optimizer";
+				fi
 			fi
-			update_config="1"
 		fi
 
 		echo "check analyze_root_partition"
