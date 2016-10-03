@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 
 PWD=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $PWD/../functions.sh
@@ -42,7 +42,7 @@ check_gucs()
 				update_config="1"
 			else
 				vitesse_greenplum=$(psql -v ON_ERROR_STOP=off -t -A -c "show vitesse.version" | grep -i "DeepGreen" | wc -l; exit ${PIPESTATUS[0]})
-				if [ $vitesse_greenplum == 0 ]; then
+				if [ "$vitesse_greenplum" == 0 ]; then
 					echo "enabling Greenplum optimizer"
 					gpconfig -c optimizer -v on --masteronly
 					update_config="1"
