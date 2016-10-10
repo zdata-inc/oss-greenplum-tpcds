@@ -41,7 +41,7 @@ check_gucs()
 				hawq config -c optimizer -v on
 				update_config="1"
 			else
-				vitesse_greenplum=$(psql -v ON_ERROR_STOP=off -t -A -c "show vitesse.version" | grep -i "DeepGreen" | wc -l; exit ${PIPESTATUS[0]})
+				vitesse_greenplum=$(psql -v ON_ERROR_STOP=OFF -t -A -c "show vitesse.version" | grep -i "DeepGreen" | wc -l; exit ${PIPESTATUS[0]})
 				if [ "$vitesse_greenplum" == 0 ]; then
 					echo "enabling Greenplum optimizer"
 					gpconfig -c optimizer -v on --masteronly
